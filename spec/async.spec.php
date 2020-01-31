@@ -4,7 +4,6 @@ namespace thesebas\promise;
 
 use Exception;
 use React\EventLoop\Factory;
-use React\EventLoop\LoopInterface;
 use React\Promise\Promise;
 use function React\Promise\all;
 use function React\Promise\race;
@@ -14,8 +13,6 @@ use function React\Promise\resolve;
 describe('async', function () {
     describe('with simple promise', function () {
         it('should return promise with value', function () {
-            $resultValue = null;
-
             asyncRun(function () {
                 return yield resolve('val');
             })->then(function ($res) {
@@ -82,7 +79,7 @@ describe('async', function () {
     });
     describe('with loop', function () {
         given('loop', function () {
-            return $loop = Factory::create();
+            return Factory::create();
         });
         given('wait', function () {
             return function ($time) {
@@ -98,13 +95,11 @@ describe('async', function () {
         });
 
         it('should work fine with loop based promises', function () {
-            /** @var LoopInterface $loop */
-            $loop = $this->loop;
-
             $this->time = microtime(true);
             $onResolve = function ($res) {
                 $this->result = $res;
                 $this->time = microtime(true) - $this->time;
+                $this->loop->stop();
             };
             $onReject = function ($reason) {
             };
@@ -128,11 +123,7 @@ describe('async', function () {
             };
             async($async("initial value"))->then($onResolve, $onReject);
 
-            $loop->addTimer(0.41, function () use ($loop) {
-                $loop->stop();
-            });
-
-            $loop->run();
+            $this->loop->run();
             expect($this->result)->toBe('wow');
             expect($this->time)->toBeGreaterThan(0.4);
             expect($this->time)->toBeLessThan(0.41);
