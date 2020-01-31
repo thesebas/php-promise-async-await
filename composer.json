@@ -1,0 +1,23 @@
+{
+  "name": "thesebas/promise-async-await",
+  "license": "MIT",
+  "type": "library",
+  "description": "async-await emulation on generator+yield",
+  "require": {
+    "react/promise": "^2"
+  },
+  "autoload": {
+    "files": [
+      "src/functions.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "thesebas",
+      "email": "thesebas@thesebas.net"
+    }
+  ],
+  "require-dev": {
+    "kahlan/kahlan": "^4.7"
+  }
+}
