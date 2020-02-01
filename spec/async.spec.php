@@ -126,7 +126,6 @@ describe('async', function () {
             $this->loop->run();
             expect($this->result)->toBe('wow');
             expect($this->time)->toBeGreaterThan(0.4);
-            expect($this->time)->toBeLessThan(0.41);
         });
     });
 });
