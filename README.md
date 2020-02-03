@@ -16,7 +16,7 @@ asyncRun(function ($init) {
     $res3 = yield race([asyncFunc($res * 2), asyncFunc($res2 / 2)]);
     return "wow" . $init . $res . $res2 . $res3;
 }, 0.1)->then(function ($result) {
-    // ... $result is eq "wow".$res.$res2.$res3;
+    // ... $result is eq "wow".$init.$res.$res2.$res3;
 });
 ```    
 
