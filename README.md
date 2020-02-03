@@ -30,8 +30,6 @@ asyncFunc($init)->then(function ($res) {
     return yield race([asyncFunc(/* $res? */), asyncFunc($res2 / 2)]);
 })->then(function ($res3) {
     return "wow" ./* $init? */ /* $res?*/ /* $res2?*/ $res3
-    })->then(function ($result) {
-    // $result is eq "wow".$res3
 });
 ```
 
