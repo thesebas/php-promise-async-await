@@ -3,6 +3,8 @@
 namespace thesebas\promise;
 
 use Exception;
+use Kahlan\Arg;
+use Kahlan\Plugin\Double;
 use React\EventLoop\Factory;
 use React\Promise\Promise;
 use function React\Promise\all;
@@ -21,11 +23,11 @@ describe('async', function () {
             expect($this->result)->toBe('val');
         });
         it('should not swallow rejections/exceptions when not last', function () {
-            $onResolve = function ($res) {
-                $this->result = $res;
-            };
-            $onReject = function () {
-            };
+            $onResolve = Double::instance(['magicMethods' => true]);
+            $onReject = Double::instance(['magicMethods' => true]);
+            expect($onResolve)->toReceive('__invoke')->with("done");
+            expect($onReject)->not->toReceive('__invoke');
+
             $f = function () {
                 try {
                     yield reject();
@@ -36,16 +38,13 @@ describe('async', function () {
                 return "done";
             };
             asyncRun($f)->then($onResolve, $onReject);
-            expect($this->result)->toBe("done");
         });
 
         it('should resolve if catched exception is last', function () {
-            $onResolve = function ($res) {
-                $this->result = $res;
-            };
-            $onReject = function ($reason) {
-                echo "oops: {$reason}";
-            };
+            $onResolve = Double::instance(['magicMethods' => true]);
+            $onReject = Double::instance(['magicMethods' => true]);
+            expect($onResolve)->toReceive('__invoke')->with("done");
+            expect($onReject)->not->toReceive('__invoke');
             $f = function () {
                 try {
                     yield reject("some reason");
@@ -56,25 +55,18 @@ describe('async', function () {
                 return "done";
             };
             asyncRun($f)->then($onResolve, $onReject);
-            expect($this->result)->toBe("done");
         });
 
         it('should return throw on rejected promise', function () {
-            $onResolve = function ($res) {
-                $this->result = $res;
-            };
-            $onReject = function ($res) {
-                $this->result = $res;
-            };
+            $onResolve = Double::instance(['magicMethods' => true]);
+            $onReject = Double::instance(['magicMethods' => true]);
+            expect($onResolve)->not->toReceive('__invoke');
+            expect($onReject)->toReceive('__invoke')->with(Arg::toBeAnInstanceOf(Exception::class));
             $f = function () {
                 yield reject(new Exception("rejection reason"));
                 return "done";
             };
             asyncRun($f)->then($onResolve, $onReject);
-            expect($this->result)->toBeAnInstanceOf(Exception::class);
-            if ($this->result instanceof Exception) {
-                expect($this->result->getMessage())->toBe("rejection reason");
-            }
         });
     });
     describe('with loop', function () {
