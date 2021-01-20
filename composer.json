@@ -18,6 +18,6 @@
     }
   ],
   "require-dev": {
-    "kahlan/kahlan": "^4.7"
+    "kahlan/kahlan": "^4.7 || ^5.0"
   }
 }
